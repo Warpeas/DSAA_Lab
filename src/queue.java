@@ -58,12 +58,20 @@ public class queue {
         }
         
         int getRear() {
-            return data[rear];
+            return data[(rear + max_size - 1) % max_size];
         }
         
         void clear() {
             front = 0;
             rear = 0;
+        }
+        
+        void copy(arrayQueue queue) {
+            this.data = queue.data;
+            this.cnt = queue.cnt;
+            this.max_size = queue.max_size;
+            this.rear = queue.rear;
+            this.front = queue.front;
         }
         
         int size() {
