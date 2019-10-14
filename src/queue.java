@@ -4,11 +4,13 @@ public class queue {
         int max_size;
         int front;
         int rear;
+        int cnt;
         
         void initArrayQueue() {
             data = new int[max_size];
             front = 0;
             rear = 0;
+            cnt = 0;
         }
         
         arrayQueue() {
@@ -22,28 +24,41 @@ public class queue {
         }
         
         boolean isFull() {
-            return (rear + 1) % max_size == front;
+            return cnt == max_size;
         }
         
         boolean isEmpty() {
-            return rear - front == 0;
+            return cnt == 0;
         }
         
         void enQueue(int item) {
             if (!isFull()) {
                 data[rear] = item;
                 rear = (rear + 1) % max_size;
+                cnt++;
             }
         }
         
         void deQueue() {
             if (!isEmpty()) {
                 front = (front + 1) % max_size;
+                cnt--;
+            }
+        }
+        
+        void deQueueTail() {
+            if (!isEmpty()) {
+                rear = (rear + max_size - 1) % max_size;
+                cnt--;
             }
         }
         
         int getFront() {
             return data[front];
+        }
+        
+        int getRear() {
+            return data[rear];
         }
         
         void clear() {
@@ -52,7 +67,7 @@ public class queue {
         }
         
         int size() {
-            return (rear - front + max_size) % max_size;
+            return cnt;
         }
     }
 }

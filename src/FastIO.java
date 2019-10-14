@@ -1,7 +1,19 @@
 import java.io.*;
 import java.util.StringTokenizer;
 
-public class Lab4_D {
+public class FastIO {
+    public static void main(String[] args) {
+        InputStream inputStream = System.in;
+        OutputStream outputStream = System.out;
+        InputReader in = new InputReader(inputStream);
+        PrintWriter out = new PrintWriter(outputStream);
+        int a, b;
+        a = in.nextInt();
+        b = in.nextInt();
+        out.println(a + b);
+        out.close();
+    }
+    
     static class InputReader {
         public BufferedReader reader;
         public StringTokenizer tokenizer;
@@ -37,13 +49,5 @@ public class Lab4_D {
         public char[] nextCharArray() {
             return next().toCharArray();
         }
-    }
-    public static void main(String[] args) {
-        InputStream inputStream = System.in;
-        OutputStream outputStream = System.out;
-        InputReader in = new InputReader(inputStream);
-        PrintWriter out = new PrintWriter(outputStream);
-        int t;
-        t = in.nextInt();
     }
 }
