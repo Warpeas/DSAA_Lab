@@ -1,3 +1,5 @@
+package StackAndQueue;
+
 import java.util.Scanner;
 
 public class Lab4_A {

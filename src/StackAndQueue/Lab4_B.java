@@ -1,6 +1,8 @@
+package StackAndQueue;
+
 import java.util.Scanner;
 
-public class Main {
+public class Lab4_B {
     private static class arrayStack {
         String[] data;
         int max_size;

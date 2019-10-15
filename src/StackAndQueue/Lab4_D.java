@@ -1,3 +1,5 @@
+package StackAndQueue;
+
 import java.io.*;
 import java.util.StringTokenizer;
 

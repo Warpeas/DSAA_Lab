@@ -1,3 +1,5 @@
+package StackAndQueue;
+
 public class queue {
     static class arrayQueue {
         int[] data;

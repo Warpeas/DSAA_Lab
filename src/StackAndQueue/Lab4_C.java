@@ -1,3 +1,5 @@
+package StackAndQueue;
+
 import java.io.*;
 import java.util.StringTokenizer;
 
@@ -5,23 +7,23 @@ public class Lab4_C {
     /*pseudo code:
     int m, i, result
     input -> m
-    queue[m]
+    StackAndQueue.queue[m]
     input -> a
     while(a!=-1)
-        if(queue.isNotEmpty)
-            if(queue.isFull)
+        if(StackAndQueue.queue.isNotEmpty)
+            if(StackAndQueue.queue.isFull)
                 front++
-            if(queue[front] >= a)
-                while(queue[rear] < a)
+            if(StackAndQueue.queue[front] >= a)
+                while(StackAndQueue.queue[rear] < a)
                     rear--
-                queue[rear] = a
-            else if(queue[front] < a)
-                clear queue
-                queue[front] = a
+                StackAndQueue.queue[rear] = a
+            else if(StackAndQueue.queue[front] < a)
+                clear StackAndQueue.queue
+                StackAndQueue.queue[front] = a
         if(i == m)
-            result = queue[front]
+            result = StackAndQueue.queue[front]
         if(i > m)
-            result ^= queue[front]
+            result ^= StackAndQueue.queue[front]
         i++;
         input -> a
      */

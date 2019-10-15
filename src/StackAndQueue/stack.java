@@ -1,3 +1,5 @@
+package StackAndQueue;
+
 public class stack {
     private static class arrayStack {
         int[] data;
@@ -49,6 +51,12 @@ public class stack {
                 return 0;
             }
             return data[top];
+        }
+        
+        int deeperPeek(){
+            if (top < 1)
+                return 0;
+            return data[top-1];
         }
         
         void clear() {
