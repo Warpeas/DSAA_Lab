@@ -3,42 +3,60 @@ package String;
 import java.util.Scanner;
 
 public class MatchingProblem {
+    static boolean isEqual(String s1, String s2, int j) {
+        for (int i = 0; i < j; i++) {
+            if (s1.charAt(i) != s2.charAt(i))
+                return false;
+        }
+        return true;
+    }
+    
+    static boolean isEqualBack(String s1, String s2, int len) {
+        int i = s1.length() - 1;
+        int j = s2.length() - 1;
+        while (len > 0) {
+            if (s1.charAt(i) != s2.charAt(j)) {
+                return false;
+            }
+            i--;
+            j--;
+            len--;
+        }
+        return true;
+    }
+    
     public static void main(String[] args) {
-        int T, n, m, sl, flag = 0;
+        int T, n, m, flag = 0;
         String s, t;
         Scanner in = new Scanner(System.in);
         T = in.nextInt();
         for (int i = 0; i < T; i++) {
             n = in.nextInt();
             m = in.nextInt();
-            sl = n - 1;
+            in.nextLine();
             s = in.nextLine();
             t = in.nextLine();
-            for (int j = 1; j < sl; j++) {
-                if (s.charAt(j) != t.charAt(j)) {
-                    flag = 0;
-                    break;
-                }
+            
+            int j;
+            for (j = 0; j < n; j++) {
                 if (s.charAt(j) == '*') {
-                    flag = 1;
                     break;
                 }
             }
-            for (int j = sl; j > 0; j--) {
-                if (s.charAt(j) != t.charAt(j)) {
-                    flag = 0;
-                    break;
+            if (n <= m + 1) {
+                if (j < n) {
+                    if (isEqual(s, t, j) && isEqualBack(s, t, n - 1 - j))
+                        flag = 1;
                 }
-                if (s.charAt(j) == '*') {
-                    flag = 1;
-                    break;
+                if (n == m) {
+                    if (isEqual(s, t, j))
+                        flag = 1;
                 }
             }
-            if (flag == 1 && sl > m) {
-                System.out.println("Yes");
-            } else {
-                System.out.println("No");
-            }
+            if (flag == 1) {
+                System.out.println("YES");
+            } else
+                System.out.println("NO");
         }
     }
 }
