@@ -26,11 +26,12 @@ public class MatchingProblem {
     }
     
     public static void main(String[] args) {
-        int T, n, m, flag = 0;
+        int T, n, m;
         String s, t;
         Scanner in = new Scanner(System.in);
         T = in.nextInt();
         for (int i = 0; i < T; i++) {
+            int flag = 0;
             n = in.nextInt();
             m = in.nextInt();
             in.nextLine();
@@ -38,17 +39,17 @@ public class MatchingProblem {
             t = in.nextLine();
             
             int j;
-            for (j = 0; j < n; j++) {
-                if (s.charAt(j) == '*') {
-                    break;
-                }
-            }
+            
             if (n <= m + 1) {
+                for (j = 0; j < n; j++) {
+                    if (s.charAt(j) == '*') {
+                        break;
+                    }
+                }
                 if (j < n) {
                     if (isEqual(s, t, j) && isEqualBack(s, t, n - 1 - j))
                         flag = 1;
-                }
-                if (n == m) {
+                } else if (n == m) {
                     if (isEqual(s, t, j))
                         flag = 1;
                 }
