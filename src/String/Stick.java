@@ -48,7 +48,7 @@ public class Stick {
         int[] s = new int[str.length() - level + 1];
         s[0] = hash(str.substring(0, level));
         for (int i = 0; i + level < str.length(); i++) {
-            s[i + 1] = (b * (s[i] - str.charAt(i) * pow(level - 1)) + str.charAt(i + level)) % q;
+            s[i + 1] = (b * (s[i] - str.charAt(i) * pow(level - 1) % q + q) % q + str.charAt(i + level) % q) % q;
         }
         return s;
     }
@@ -56,9 +56,9 @@ public class Stick {
     private static int[] hashSub(String str, int[] s, int level) {
         int[] sub = new int[s.length + 1];
         for (int i = 0; i < s.length; i++) {
-            sub[i] = s[i] - str.charAt(i + level - 1);
+            sub[i] = s[i] - str.charAt(i + level - 1) % q;
         }
-        sub[s.length] = (s[s.length - 1] - str.charAt(s.length - 1) * pow(level - 1)) % q;
+        sub[s.length] = (s[s.length - 1] - str.charAt(s.length - 1) * pow(level - 1) % q + q) % q;
         return sub;
     }
     
@@ -155,12 +155,11 @@ public class Stick {
             if (level == 0) {
                 break;
             }
-//            sh1 = hashSub(s1, sh1, level);
-            sh1 = hashString(s1, level);
-//            sh2 = hashSub(s2, sh2, level);
-            sh2 = hashString(s2, level);
+            sh1 = hashSub(s1, sh1, level);
+//            rsh1 = hashString(s1, level);
+            sh2 = hashSub(s2, sh2, level);
+//            rsh2 = hashString(s2, level);
             sh2 = mergeSort(sh2, sh2.length);
-//            sh2 = mergeSort(sh2, sh2.length);
         }
         
         System.out.println(level);
