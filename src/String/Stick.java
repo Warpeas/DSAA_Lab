@@ -21,14 +21,14 @@ public class Stick {
         sort(sh2)
      print(level)
      */
-    private static long b = 131;
-    private static int q = 131;
+    private static long b = 3;
+    private static int q = 1000000007;
     
     private static long pow(int n) {
         long a = 1;
         for (int i = 0; i < n; i++) {
             a *= b;
-//            a %= q;
+            a %= q;
         }
         return a;
     }
@@ -38,7 +38,7 @@ public class Stick {
         if (str.length() > 0) {
             for (int i = 0; i < str.length(); i++) {
                 h = b * h + str.charAt(i);
-//                h %= q;
+                h %= q;
             }
         }
         return h;
@@ -49,8 +49,8 @@ public class Stick {
         s[0] = hash(str.substring(0, level));
 //        int h = pow(level - 1);
         for (int i = 0; i + level < str.length(); i++) {
-//            s[i + 1] = (b * (s[i] - str.charAt(i) * h % q + q) % q + str.charAt(i + level) % q) % q;
-            s[i + 1] = (b * (s[i] - str.charAt(i) * h) + str.charAt(i + level));
+            s[i + 1] = ((b * (s[i] % q - str.charAt(i) * h % q + q) % q) % q + str.charAt(i + level) % q) % q;
+//            s[i + 1] = (b * (s[i] - str.charAt(i) * h) + str.charAt(i + level));
             
         }
         return s;
@@ -138,8 +138,8 @@ public class Stick {
         int level = 0;
         int d = 0, u;
         Scanner in = new Scanner(System.in);
-        String s1 = in.nextLine();
-        String s2 = in.nextLine();
+        String s1 = in.next();
+        String s2 = in.next();
         if (s1.length() > s2.length()) {
             String s;
             s = s1;
