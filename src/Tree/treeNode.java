@@ -3,22 +3,11 @@ package Tree;
 public class treeNode {
     static int k = 2;
     
-    private static class data {
-        int index;
-        int depth;
-        
-        data(int index, int depth) {
-            this.index = index;
-            this.depth = depth;
-        }
-    }
-    
     private static class TreeNode {
         int index;
         int depth = 0;
         int child_amount = -1;
         int relation_amount = 0;
-        data field = new data(index, depth);
         TreeNode father;
         TreeNode[] child = new TreeNode[k];
         TreeNode[] relations = new TreeNode[k + 1];
