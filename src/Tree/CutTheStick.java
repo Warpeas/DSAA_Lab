@@ -6,12 +6,17 @@ import java.util.StringTokenizer;
 import static java.util.Arrays.sort;
 
 public class CutTheStick {
-    static int Huffuman(int[] a, int i, int n) {
+    static int Huffuman(int[] a, int n) {
         int sum;
-        if (i < n - 1) {
-            sum = a[i] + a[i + 1];
-            a[++i] = sum;
-            return sum + Huffuman(a, i, n);
+        sort(a);
+        if (n > 1) {
+            sum = a[0] + a[1];
+            a[1] = sum;
+            int[] b = new int[n - 1];
+            for (int i = 0; i < n - 1; i++) {
+                b[i] = a[i + 1];
+            }
+            return sum + Huffuman(b, n - 1);
         }
         return 0;
     }
@@ -28,7 +33,7 @@ public class CutTheStick {
             for (int j = 0; j < n; j++) {
                 a[j] = in.nextInt();
             }
-            out.println(Huffuman(a, 0, n));
+            out.println(Huffuman(a, n));
         }
         out.close();
     }
