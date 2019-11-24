@@ -180,14 +180,17 @@ public class CutTheStickPro {
                 if (this.left.index < this.right.index) {
                     cnt += this.index + this.left.index;
                     this.left.index += this.index;
+                    tmp = this.left;
                 } else {
-                    cnt += (this.index + this.right.index);
+                    cnt += this.index + this.right.index;
                     this.right.index += this.index;
+                    tmp = this.right;
                 }
             } else {
                 cnt += this.index + this.left.index;
-                this.left.index += this.index;
             }
+            tmp.maintain();
+            tmp = this;
             for (int i = 1; i < str.length() - 1; i++) {
                 if (str.charAt(i) == '0') {
                     tmp = tmp.left;
@@ -202,6 +205,43 @@ public class CutTheStickPro {
                 tmp.right = null;
             }
             tmp = this;
+//            while (tmp.left != null || tmp.right != null) {
+//                if (tmp.right != null && tmp.left != null) {
+//                    if (tmp.right.index < tmp.left.index) {
+//                        if (tmp.index < tmp.right.index) {
+//                            break;
+//                        } else {
+//                            int i = tmp.index;
+//                            tmp.index = tmp.right.index;
+//                            tmp.right.index = i;
+//                            tmp = tmp.right;
+//                        }
+//                    } else {
+//                        if (tmp.index < tmp.left.index) {
+//                            break;
+//                        } else {
+//                            int i = tmp.index;
+//                            tmp.index = tmp.left.index;
+//                            tmp.left.index = i;
+//                            tmp = tmp.left;
+//                        }
+//                    }
+//                } else {
+//                    if (tmp.index < tmp.left.index) {
+//                        break;
+//                    } else {
+//                        int i = tmp.index;
+//                        tmp.index = tmp.left.index;
+//                        tmp.left.index = i;
+//                        tmp = tmp.left;
+//                    }
+//                }
+//            }
+            tmp.maintain();
+        }
+        
+        void maintain(){
+            TreeNode tmp = this;
             while (tmp.left != null || tmp.right != null) {
                 if (tmp.right != null && tmp.left != null) {
                     if (tmp.right.index < tmp.left.index) {

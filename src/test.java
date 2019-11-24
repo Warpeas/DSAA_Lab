@@ -1,9 +1,13 @@
-import java.util.Scanner;
+import java.util.Random;
 
 public class test {
     public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
-        String s1 = in.nextLine();
-        String s2 = in.nextLine();
+        Random r = new Random();
+        int n = r.nextInt(15);
+        System.out.println(1);
+        System.out.println(n);
+        for (int i = 0; i < n; i++) {
+            System.out.print(r.nextInt(10)+" ");
+        }
     }
 }
