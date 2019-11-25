@@ -6,7 +6,8 @@ import java.util.StringTokenizer;
 public class CutTheStickPro {
     static InputStream inputStream = System.in;
     static InputReader in = new InputReader(inputStream);
-    static int n, cnt, nodes;
+    static int n, nodes;
+    static long cnt;
     
     public static void main(String[] args) {
         OutputStream outputStream = System.out;
@@ -60,13 +61,13 @@ public class CutTheStickPro {
     }
     
     private static class TreeNode {
-        int index;
+        long index;
         int depth = 0;
         TreeNode father;
         TreeNode left;
         TreeNode right;
         
-        TreeNode(int index) {
+        TreeNode(long index) {
             this.index = index;
         }
         
@@ -74,11 +75,11 @@ public class CutTheStickPro {
             n = in.nextInt();
 //            TreeNode[] treeNodes = new TreeNode[n + 1];
 //            treeNodes[0] = new TreeNode(0);
-            int index = in.nextInt();
+            long index = in.nextLong();
             TreeNode root = new TreeNode(index);
             nodes++;
             for (int i = 1; i < n; i++) {
-                index = in.nextInt();
+                index = in.nextLong();
                 TreeNode tmp = new TreeNode(index);
                 nodes++;
                 root.insertMin(tmp);
@@ -106,7 +107,7 @@ public class CutTheStickPro {
             }
             while (tmp != this) {
                 if (tmp.index < tmp.father.index) {
-                    int i = tmp.index;
+                    long i = tmp.index;
                     tmp.index = tmp.father.index;
                     tmp.father.index = i;
                     tmp = tmp.father;
@@ -136,7 +137,7 @@ public class CutTheStickPro {
             }
             while (tmp != this) {
                 if (tmp.index > tmp.father.index) {
-                    int i = tmp.index;
+                    long i = tmp.index;
                     tmp.index = tmp.father.index;
                     tmp.father.index = i;
                     tmp = tmp.father;
@@ -248,7 +249,7 @@ public class CutTheStickPro {
                         if (tmp.index < tmp.right.index) {
                             break;
                         } else {
-                            int i = tmp.index;
+                            long i = tmp.index;
                             tmp.index = tmp.right.index;
                             tmp.right.index = i;
                             tmp = tmp.right;
@@ -257,7 +258,7 @@ public class CutTheStickPro {
                         if (tmp.index < tmp.left.index) {
                             break;
                         } else {
-                            int i = tmp.index;
+                            long i = tmp.index;
                             tmp.index = tmp.left.index;
                             tmp.left.index = i;
                             tmp = tmp.left;
@@ -267,7 +268,7 @@ public class CutTheStickPro {
                     if (tmp.index < tmp.left.index) {
                         break;
                     } else {
-                        int i = tmp.index;
+                        long i = tmp.index;
                         tmp.index = tmp.left.index;
                         tmp.left.index = i;
                         tmp = tmp.left;
@@ -304,7 +305,7 @@ public class CutTheStickPro {
                         if (tmp.index > tmp.right.index) {
                             break;
                         } else {
-                            int i = tmp.index;
+                            long i = tmp.index;
                             tmp.index = tmp.right.index;
                             tmp.right.index = i;
                             tmp = tmp.right;
@@ -313,7 +314,7 @@ public class CutTheStickPro {
                         if (tmp.index > tmp.left.index) {
                             break;
                         } else {
-                            int i = tmp.index;
+                            long i = tmp.index;
                             tmp.index = tmp.left.index;
                             tmp.left.index = i;
                             tmp = tmp.left;
@@ -323,7 +324,7 @@ public class CutTheStickPro {
                     if (tmp.index > tmp.left.index) {
                         break;
                     } else {
-                        int i = tmp.index;
+                        long i = tmp.index;
                         tmp.index = tmp.left.index;
                         tmp.left.index = i;
                         tmp = tmp.left;
