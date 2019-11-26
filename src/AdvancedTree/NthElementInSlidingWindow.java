@@ -17,20 +17,19 @@ public class NthElementInSlidingWindow {
         PrintWriter out = new PrintWriter(outputStream);
         int m = in.nextInt();
         int k = in.nextInt();
-        TreeNode tree;
+        TreeNode tree = null;
         int n;
         long[] w = new long[m];
         for (int i = 0; i < m; i++) {
             w[i] = in.nextLong();
         }
-        tree = new TreeNode(w[0]);
-        for (int i = 1; i < m; i++) {
+        for (int i = 0; i < m; i++) {
             if (i >= k) {
                 n = in.nextInt();
                 out.println(tree.topk(tree, tree, n));
                 tree.delete(tree, w[i - k]);
             }
-            tree = tree.insert(tree, w[i]);
+            tree = TreeNode.insert(tree, w[i]);
         }
         n = in.nextInt();
         out.println(tree.topk(tree, tree, n));
@@ -84,7 +83,7 @@ public class NthElementInSlidingWindow {
             this.index = index;
         }
         
-        public TreeNode insert(TreeNode root, long key) {
+        public static TreeNode insert(TreeNode root, long key) {
             if (root == null) {
                 root = new TreeNode(key);
             } else {
@@ -94,7 +93,7 @@ public class NthElementInSlidingWindow {
                 } else {
                     root.left = insert(root.left, key);
                 }
-                root = maintain(root, key > root.index);
+                root = root.maintain(root, key > root.index);
             }
             return root;
         }

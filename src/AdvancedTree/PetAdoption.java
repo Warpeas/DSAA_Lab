@@ -5,11 +5,43 @@ import java.util.StringTokenizer;
 
 public class PetAdoption {
     public static void main(String[] args) {
+        long q = Long.MIN_VALUE;
         InputStream inputStream = System.in;
         OutputStream outputStream = System.out;
         InputReader in = new InputReader(inputStream);
         PrintWriter out = new PrintWriter(outputStream);
         int n = in.nextInt();
+        long cnt = 0;
+        TreeNode tree = null;
+        for (int i = 0; i < n; i++) {
+            int a;
+            long b;
+            a = in.nextInt();
+            b = in.nextLong();
+            if (tree == null) {
+                tree = TreeNode.insert(tree, a, b);
+            } else {
+                if (a == tree.a) {
+                    tree = TreeNode.insert(tree, a, b);
+                } else {
+                    long p = TreeNode.predecessor(tree, b, q);
+                    long s = TreeNode.successor(tree, b, q);
+                    if (p != q && abs(b - p) <= abs(b - s)) {
+                        cnt += abs(b - p);
+                        tree = tree.delete(tree, p);
+                    } else if (s != q) {
+                        cnt += abs(b - s);
+                        tree = tree.delete(tree, s);
+                    }
+                }
+            }
+        }
+        out.println(cnt);
+        out.close();
+    }
+    
+    public static long abs(long a) {
+        return a > 0 ? a : -a;
     }
     
     static class InputReader {
@@ -52,24 +84,62 @@ public class PetAdoption {
     private static class TreeNode {
         long index;
         long size = 1;
+        int a;
         TreeNode left;
         TreeNode right;
         
-        TreeNode(long index) {
+        TreeNode(int a, long index) {
+            this.a = a;
             this.index = index;
         }
         
-        public TreeNode insert(TreeNode root, long key) {
+        public static long predecessor(TreeNode root, long key, long q) {
+            if (root != null) {
+                if (root.index == key) {
+                    q = root.index;
+                } else if (root.index > key) {
+                    if (root.left != null) {
+                        q = predecessor(root.left, key, q);
+                    }
+                } else {
+                    q = root.index;
+                    if (root.right != null) {
+                        q = predecessor(root.right, key, q);
+                    }
+                }
+            }
+            return q;
+        }
+        
+        public static long successor(TreeNode root, long key, long q) {
+            if (root != null) {
+                if (root.index == key) {
+                    q = root.index;
+                } else if (root.index < key) {
+                    if (root.right != null) {
+                        q = successor(root.right, key, q);
+                    }
+                } else {
+                    q = root.index;
+                    if (root.left != null) {
+                        q = successor(root.left, key, q);
+                    }
+                }
+            }
+            return q;
+        }
+        
+        public static TreeNode insert(TreeNode root, int a, long key) {
             if (root == null) {
-                root = new TreeNode(key);
+                root = new TreeNode(a, key);
             } else {
                 root.size++;
                 if (key > root.index) {
-                    root.right = insert(root.right, key);
+                    root.right = insert(root.right, a, key);
                 } else {
-                    root.left = insert(root.left, key);
+                    root.left = insert(root.left, a, key);
                 }
-                root = maintain(root, key > root.index);
+                root = root.maintain(root, key > root.index);
             }
             return root;
         }
