@@ -73,10 +73,11 @@ public class BeggingforGames {
                     stopMoney[j] = stopMoney[j - 1] + (stop[j] - stop[j - 1]) * (k * (m - j) + i);
             }
             int a = binarySearch();
-            n = stopMoney[low - 1];
+            if (low != 0)
+                n = stopMoney[low - 1];
             cover = low;
             if (a > 0) {
-                day = a;
+                day = a + 1;
                 time = 1;
             } else {
                 day = low;
