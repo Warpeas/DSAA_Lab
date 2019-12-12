@@ -2,6 +2,7 @@ package Graph;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
@@ -57,51 +58,73 @@ public class TheSwordofDamocles {
     }
     
     static boolean isConnected() {
+        int isConnectedLeft ;
+        int isConnectedRight ;
         for (int i = 0; i < bfsTrees.size(); i++) {
-        
+        isConnectedLeft = 0;
+        isConnectedRight = 0;
+            for (int j = 0; j < bfsTrees.get(i).nodes.size(); j++) {
+                if (isConnectedLeft(bfsTrees.get(i).nodes.get(j)))
+                    isConnectedLeft = 1;
+                if (isConnectedRight(bfsTrees.get(i).nodes.get(j)))
+                    isConnectedRight = 1;
+            }
+            if (isConnectedLeft==1&&isConnectedRight==1){
+                return true;
+            }
         }
         return false;
     }
     
     static boolean isConnectedLeft(int index) {
-        return monsters[index].x <= monsters[index].s || n - monsters[index].y <= monsters[index].s;
+        return monsters[index].x <= monsters[index].s || m - monsters[index].y <= monsters[index].s;
     }
     
     static boolean isConnectedRight(int index) {
-        return m - monsters[index].x <= monsters[index].s || monsters[index].y <= monsters[index].s;
+        return n - monsters[index].x <= monsters[index].s || monsters[index].y <= monsters[index].s;
     }
     
     static class BFS {
-        int index;
-        ArrayList<BFS> next = new ArrayList<>();
+//        int index;
+        ArrayList<Integer> nodes = new ArrayList<>();
         
         BFS(int index) {
-            this.index = index;
+            this.nodes.add(index);
         }
     }
     
-    static ArrayList<BFS> buildBFSTrees() {
+    static void buildBFSTrees() {
         bfsTrees = new ArrayList<>();
         for (int i = 0; i < adjacencyLists.length; i++) {
             if (visit[i] != 1)
-                bfsTrees.add(buildBFSTree(1));
+                bfsTrees.add(buildBFSTree(i));
         }
-        return bfsTrees;
     }
     
     static BFS buildBFSTree(int index) {
         BFS root = new BFS(index);
+        nodes = new LinkedList<>();
         visit[index] = 1;
-        for (int i = 0; i < adjacencyLists[index].next.size(); i++) {
-            if (visit[adjacencyLists[index].next.get(i)] != 1) {
-                nodes.add(adjacencyLists[index].next.get(i));
-                visit[adjacencyLists[index].next.get(i)] = 1;
+        nodes.add(index);
+        while (!nodes.isEmpty()) {
+            int top = nodes.poll();
+            for (int i = 0; i < adjacencyLists[top].next.size(); i++) {
+                if (visit[adjacencyLists[top].next.get(i)]!=1) {
+                    visit[adjacencyLists[top].next.get(i)] = 1;
+                    nodes.add(adjacencyLists[top].next.get(i));
+                    root.nodes.add(adjacencyLists[top].next.get(i));
+                }
             }
         }
-        while (!nodes.isEmpty()){
-            root.next.add(buildBFSTree(nodes.poll()));
-        }
         return root;
+    }
+    
+    static void creatMonster(){
+        monsters = new Monster[k];
+        visit = new int[k];
+        for (int i = 0; i < k; i++) {
+            monsters[i] = new Monster(in.nextInt(),in.nextInt(),in.nextInt());
+        }
     }
     
     public static void main(String[] args) {
@@ -110,8 +133,15 @@ public class TheSwordofDamocles {
             n = in.nextInt();
             m = in.nextInt();
             k = in.nextInt();
+            creatMonster();
             creatAdjacencyList();
+            buildBFSTrees();
+            if (!isConnected())
+                out.println("Yes");
+            else
+                out.println("No");
         }
+        out.close();
     }
     
     static class InputReader {
