@@ -13,33 +13,39 @@ public class ValentineDay {
     static PrintWriter out = new PrintWriter(outputStream);
     static ArrayList<city> cities;
     static Queue<BFS> nodes;
-    static int[] visit;
-    static int n, m, addtion = 0;
+    static int distance = -1;
+//    static ArrayList<Integer> visit;
+    static int n, m, addition = 0;
     
     static class city {
+        int index;
         ArrayList<Integer> next;
-        
+        int visit;
         city() {
             next = new ArrayList<>();
+            visit = 0;
         }
-        
-        ;
+        city(int position) {
+            index = position;
+            next = new ArrayList<>();
+            visit = 0;
+        }
     }
     
     static void buildGraph() {
         cities = new ArrayList<>();
         for (int i = 0; i < n; i++) {
-            cities.add(new city());
+            cities.add(new city(i+1));
         }
         for (int i = 0; i < m; i++) {
             int index = in.nextInt() - 1;
-            int nxt = in.nextInt();
+            int nxt = in.nextInt() - 1;
             int dis = in.nextInt();
             if (dis == 2) {
                 cities.add(new city());
-                cities.get(index).next.add(n + addtion);
-                cities.get(n + addtion).next.add(nxt);
-                addtion++;
+                cities.get(index).next.add(n + addition);
+                cities.get(n + addition).next.add(nxt);
+                addition++;
             } else {
                 cities.get(index).next.add(nxt);
             }
@@ -58,34 +64,32 @@ public class ValentineDay {
     static BFS buildBFSTree(int index) {
         BFS root = new BFS(index);
         nodes = new LinkedList<>();
-        visit[index] = 1;
+        cities.get(index).visit = 1;
         nodes.add(root);
         while (!nodes.isEmpty()) {
             BFS top = nodes.poll();
             for (int i = 0; i < cities.get(top.index).next.size(); i++) {
-                if (visit[cities.get(top.index).next.get(i)] != 1) {
-                    visit[cities.get(top.index).next.get(i)] = 1;
-                    nodes.add(new BFS(cities.get(top.index).next.get(i)));
-                    root.next.add(cities.get(top.index).next.get(i));
+                if (cities.get(cities.get(top.index).next.get(i)).visit != 1) {
+                    cities.get(cities.get(top.index).next.get(i)).visit = 1;
+                    BFS next = new BFS(cities.get(top.index).next.get(i));
+                    nodes.add(next);
+                    top.next.add(next);
                 }
             }
         }
         return root;
     }
     
-    static int findN(BFS root, int cnt) {
-        cnt++;
+    static void findN(BFS root, int cnt) {
         if (root.next != null) {
-            for (BFS sub :
-                    root.next) {
+            cnt++;
+            for (BFS sub : root.next) {
                 if (sub.index == n - 1) {
-                    return cnt;
+                    distance = cnt;
                 } else {
-                    return findN(sub, cnt + 1);
+                    findN(sub, cnt);
                 }
             }
-        } else {
-            return -1;
         }
     }
     
@@ -93,7 +97,8 @@ public class ValentineDay {
         n = in.nextInt();
         m = in.nextInt();
         buildGraph();
-        out.println(findN(buildBFSTree(0), 0));
+        findN(buildBFSTree(0), 0);
+        out.println(distance);
         out.close();
     }
     
