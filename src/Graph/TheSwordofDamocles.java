@@ -58,18 +58,18 @@ public class TheSwordofDamocles {
     }
     
     static boolean isConnected() {
-        int isConnectedLeft ;
-        int isConnectedRight ;
+        int isConnectedLeft;
+        int isConnectedRight;
         for (int i = 0; i < bfsTrees.size(); i++) {
-        isConnectedLeft = 0;
-        isConnectedRight = 0;
+            isConnectedLeft = 0;
+            isConnectedRight = 0;
             for (int j = 0; j < bfsTrees.get(i).nodes.size(); j++) {
                 if (isConnectedLeft(bfsTrees.get(i).nodes.get(j)))
                     isConnectedLeft = 1;
                 if (isConnectedRight(bfsTrees.get(i).nodes.get(j)))
                     isConnectedRight = 1;
             }
-            if (isConnectedLeft==1&&isConnectedRight==1){
+            if (isConnectedLeft == 1 && isConnectedRight == 1) {
                 return true;
             }
         }
@@ -85,7 +85,7 @@ public class TheSwordofDamocles {
     }
     
     static class BFS {
-//        int index;
+        //        int index;
         ArrayList<Integer> nodes = new ArrayList<>();
         
         BFS(int index) {
@@ -109,7 +109,7 @@ public class TheSwordofDamocles {
         while (!nodes.isEmpty()) {
             int top = nodes.poll();
             for (int i = 0; i < adjacencyLists[top].next.size(); i++) {
-                if (visit[adjacencyLists[top].next.get(i)]!=1) {
+                if (visit[adjacencyLists[top].next.get(i)] != 1) {
                     visit[adjacencyLists[top].next.get(i)] = 1;
                     nodes.add(adjacencyLists[top].next.get(i));
                     root.nodes.add(adjacencyLists[top].next.get(i));
@@ -119,11 +119,11 @@ public class TheSwordofDamocles {
         return root;
     }
     
-    static void creatMonster(){
+    static void creatMonster() {
         monsters = new Monster[k];
         visit = new int[k];
         for (int i = 0; i < k; i++) {
-            monsters[i] = new Monster(in.nextInt(),in.nextInt(),in.nextInt());
+            monsters[i] = new Monster(in.nextInt(), in.nextInt(), in.nextInt());
         }
     }
     
