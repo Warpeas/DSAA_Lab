@@ -9,45 +9,69 @@ public class Soldiers {
     static InputReader in = new InputReader(inputStream);
     static PrintWriter out = new PrintWriter(outputStream);
     static int n, m, nodes;
-    static long cnt;
     static AdjacencyList[] adjacencyLists;
     static ArrayList<DFS> dfsTrees;
-    static Stack<Integer> stack;
-    static int[] visit;
+    static Stack<DFS> stack;
+    static Stack<Integer> output;
+    static TreeNode root;
+    
+    public static void main(String[] args) {
+        int t = in.nextInt();
+        for (int i = 0; i < t; i++) {
+            creatAdjacencyList();
+            buildDFSTrees();
+            buildBinaryHeap();
+            buildOutputStack();
+            output();
+        }
+    }
     
     static class AdjacencyList {
         int index;
         ArrayList<Integer> next = new ArrayList<>();
+        int visit;
         
-        AdjacencyList(int index) {
-            this.index = index;
+        AdjacencyList() {
+            next = new ArrayList<>();
+            visit = 0;
+        }
+        
+        AdjacencyList(int position) {
+            index = position;
+            next = new ArrayList<>();
+            visit = 0;
         }
     }
     
     static void creatAdjacencyList() {
+        n = in.nextInt();
+        m = in.nextInt();
         adjacencyLists = new AdjacencyList[n];
+        for (int i = 0; i < n; i++) {
+            adjacencyLists[i] = new AdjacencyList(i + 1);
+        }
         int index;
         int nxt;
         for (int i = 0; i < m; i++) {
-            index = in.nextInt()-1;
-            nxt = in.nextInt()-1;
+            index = in.nextInt() - 1;
+            nxt = in.nextInt() - 1;
             adjacencyLists[nxt].next.add(index);
         }
     }
     
     static class DFS {
-        //        int index;
-        ArrayList<Integer> nodes = new ArrayList<>();
+        int index;
+        ArrayList<DFS> nodes = new ArrayList<>();
         
         DFS(int index) {
-            this.nodes.add(index);
+            this.index = index;
         }
     }
     
     static void buildDFSTrees() {
         dfsTrees = new ArrayList<>();
         for (int i = 0; i < adjacencyLists.length; i++) {
-            if (visit[i] != 1)
+            if (adjacencyLists[i].visit != 1)
                 dfsTrees.add(buildDFSTree(i));
         }
     }
@@ -55,101 +79,94 @@ public class Soldiers {
     static DFS buildDFSTree(int index) {
         DFS root = new DFS(index);
         stack = new Stack<>();
-        visit[index] = 1;
-        stack.push(index);
+        adjacencyLists[index].visit = 1;
+        stack.add(root);
         while (!stack.isEmpty()) {
-            int top = stack.pop();
-            for (int i = 0; i < adjacencyLists[top].next.size(); i++) {
-                if (visit[adjacencyLists[top].next.get(i)] != 1) {
-                    visit[adjacencyLists[top].next.get(i)] = 1;
-                    stack.push(adjacencyLists[top].next.get(i));
-                    root.nodes.add(adjacencyLists[top].next.get(i));
+            DFS top = stack.pop();
+            for (int i = 0; i < adjacencyLists[top.index].next.size(); i++) {
+                if (adjacencyLists[adjacencyLists[top.index].next.get(i)].visit != 1) {
+                    adjacencyLists[adjacencyLists[top.index].next.get(i)].visit = 1;
+                    DFS next = new DFS(adjacencyLists[top.index].next.get(i));
+                    stack.push(next);
+                    top.nodes.add(next);
                 }
             }
         }
         return root;
     }
     
+    static TreeNode buildBinaryHeap() {
+        root = new TreeNode(dfsTrees.get(0));
+        nodes++;
+        for (int i = 1; i < dfsTrees.size(); i++) {
+            TreeNode tmp = new TreeNode(dfsTrees.get(i));
+            nodes++;
+            root.insertMax(tmp);
+        }
+        return root;
+    }
+    
+    static void buildOutputStack() {
+        output = new Stack<>();
+        while (true) {
+            DFS tmp = root.deleteMax();
+            output.push(tmp.index + 1);
+            for (int i = 0; i < tmp.nodes.size(); i++) {
+                root.insertMax(new TreeNode(tmp.nodes.get(i)));
+            }
+            if (root == null && tmp.nodes.isEmpty()) {
+                break;
+            }
+        }
+    }
+    
+    static void output() {
+        while (!output.empty()) {
+            out.print(output.pop() + " ");
+        }
+        out.println();
+    }
+    
     private static class TreeNode {
-        long index;
-        int depth = 0;
+        DFS index;
         TreeNode father;
         TreeNode left;
         TreeNode right;
         
-        TreeNode(long index) {
+        TreeNode(DFS index) {
             this.index = index;
         }
         
-        static TreeNode buildBinaryHeap() {
-            long index = in.nextLong();
-            TreeNode root = new TreeNode(index);
-            nodes++;
-            for (int i = 1; i < n; i++) {
-                index = in.nextLong();
-                TreeNode tmp = new TreeNode(index);
-                nodes++;
-                root.insertMin(tmp);
-            }
-            return root;
-        }
-        
-        void insertMin(TreeNode node) {
-            String str = toBinary(nodes);
-            TreeNode tmp = this;
-            for (int i = 1; i < str.length() - 1; i++) {
-                if (str.charAt(i) == '0') {
-                    tmp = tmp.left;
-                } else
-                    tmp = tmp.right;
-            }
-            if (str.charAt(str.length() - 1) == '0') {
-                tmp.left = node;
-                tmp.left.father = tmp;
-                tmp = tmp.left;
-            } else {
-                tmp.right = node;
-                tmp.right.father = tmp;
-                tmp = tmp.right;
-            }
-            while (tmp != this) {
-                if (tmp.index < tmp.father.index) {
-                    long i = tmp.index;
-                    tmp.index = tmp.father.index;
-                    tmp.father.index = i;
-                    tmp = tmp.father;
-                } else {
-                    break;
-                }
-            }
-        }
-        
         void insertMax(TreeNode node) {
-            String str = toBinary(nodes);
-            TreeNode tmp = this;
-            for (int i = 1; i < str.length() - 1; i++) {
-                if (str.charAt(i) == '0') {
-                    tmp = tmp.left;
-                } else
-                    tmp = tmp.right;
-            }
-            if (str.charAt(str.length() - 1) == '0') {
-                tmp.left = node;
-                tmp.left.father = tmp;
-                tmp = tmp.left;
+            if (root.index.index == -1) {
+                root = node;
             } else {
-                tmp.right = node;
-                tmp.right.father = tmp;
-                tmp = tmp.right;
-            }
-            while (tmp != this) {
-                if (tmp.index > tmp.father.index) {
-                    long i = tmp.index;
-                    tmp.index = tmp.father.index;
-                    tmp.father.index = i;
-                    tmp = tmp.father;
+                String str = toBinary(nodes);
+                TreeNode tmp = this;
+                for (int i = 1; i < str.length() - 1; i++) {
+                    if (str.charAt(i) == '0') {
+                        tmp = tmp.left;
+                    } else
+                        tmp = tmp.right;
+                }
+                if (str.charAt(str.length() - 1) == '0') {
+                    tmp.left = node;
+                    tmp.left.father = tmp;
+                    tmp = tmp.left;
                 } else {
-                    break;
+                    tmp.right = node;
+                    tmp.right.father = tmp;
+                    tmp = tmp.right;
+                }
+                while (tmp != this) {
+                    if (tmp.index.index > tmp.father.index.index) {
+                        int i = tmp.index.index;
+                        tmp.index.index = tmp.father.index.index;
+                        tmp.father.index.index = i;
+                        tmp = tmp.father;
+                    } else {
+                        break;
+                    }
                 }
             }
         }
@@ -163,25 +180,20 @@ public class Soldiers {
             return str;
         }
         
-        void deleteMin() {
+        DFS deleteMax() {
             String str = toBinary(nodes);
-            TreeNode tmp = this;
+            TreeNode tmp = root;
+            DFS output = root.index;
             nodes--;
-            if (this.left != null && this.right != null) {
-                if (this.left.index < this.right.index) {
-                    cnt += this.index + this.left.index;
-                    this.left.index += this.index;
-                    tmp = this.left;
-                } else {
-                    cnt += this.index + this.right.index;
-                    this.right.index += this.index;
-                    tmp = this.right;
-                }
-            } else {
-                cnt += this.index + this.left.index;
+            if (nodes == 1) {
+                tmp.index.index = tmp.left.index.index;
+                tmp.left = null;
+                return output;
+            } else if (nodes == 0) {
+                root.index.index = -1;
+                return output;
             }
-            tmp.maintain();
-            tmp = this;
+//            tmp.maintain();
             for (int i = 1; i < str.length() - 1; i++) {
                 if (str.charAt(i) == '0') {
                     tmp = tmp.left;
@@ -189,102 +201,47 @@ public class Soldiers {
                     tmp = tmp.right;
             }
             if (str.charAt(str.length() - 1) == '0') {
-                this.index = tmp.left.index;
+                root.index.index = root.left.index.index;
                 tmp.left = null;
             } else {
-                this.index = tmp.right.index;
+                root.index.index = root.right.index.index;
                 tmp.right = null;
             }
-            tmp = this;
+            tmp = root;
             tmp.maintain();
+            return output;
         }
         
         void maintain() {
             TreeNode tmp = this;
             while (tmp.left != null || tmp.right != null) {
                 if (tmp.right != null && tmp.left != null) {
-                    if (tmp.right.index < tmp.left.index) {
-                        if (tmp.index < tmp.right.index) {
+                    if (tmp.right.index.index > tmp.left.index.index) {
+                        if (tmp.index.index > tmp.right.index.index) {
                             break;
                         } else {
-                            long i = tmp.index;
-                            tmp.index = tmp.right.index;
-                            tmp.right.index = i;
+                            int i = tmp.index.index;
+                            tmp.index.index = tmp.right.index.index;
+                            tmp.right.index.index = i;
                             tmp = tmp.right;
                         }
                     } else {
-                        if (tmp.index < tmp.left.index) {
+                        if (tmp.index.index > tmp.left.index.index) {
                             break;
                         } else {
-                            long i = tmp.index;
-                            tmp.index = tmp.left.index;
-                            tmp.left.index = i;
+                            int i = tmp.index.index;
+                            tmp.index.index = tmp.left.index.index;
+                            tmp.left.index.index = i;
                             tmp = tmp.left;
                         }
                     }
-                } else {
-                    if (tmp.index < tmp.left.index) {
+                } else if (tmp.left != null) {
+                    if (tmp.index.index > tmp.left.index.index) {
                         break;
                     } else {
-                        long i = tmp.index;
-                        tmp.index = tmp.left.index;
-                        tmp.left.index = i;
-                        tmp = tmp.left;
-                    }
-                }
-            }
-        }
-        
-        void deleteMax() {
-            String str = toBinary(nodes);
-            TreeNode tmp = this;
-            nodes--;
-            if (!str.equals("1")) {
-                for (int i = 1; i < str.length() - 1; i++) {
-                    if (str.charAt(i) == '0') {
-                        tmp = tmp.left;
-                    } else
-                        tmp = tmp.right;
-                }
-                if (str.charAt(str.length() - 1) == '0') {
-                    this.index = tmp.left.index;
-                    tmp.left = null;
-                } else {
-                    this.index = tmp.right.index;
-                    tmp.right = null;
-                }
-            } else {
-                return;
-            }
-            tmp = this;
-            while (tmp.left != null || tmp.right != null) {
-                if (tmp.right != null && tmp.left != null) {
-                    if (tmp.right.index > tmp.left.index) {
-                        if (tmp.index > tmp.right.index) {
-                            break;
-                        } else {
-                            long i = tmp.index;
-                            tmp.index = tmp.right.index;
-                            tmp.right.index = i;
-                            tmp = tmp.right;
-                        }
-                    } else {
-                        if (tmp.index > tmp.left.index) {
-                            break;
-                        } else {
-                            long i = tmp.index;
-                            tmp.index = tmp.left.index;
-                            tmp.left.index = i;
-                            tmp = tmp.left;
-                        }
-                    }
-                } else {
-                    if (tmp.index > tmp.left.index) {
-                        break;
-                    } else {
-                        long i = tmp.index;
-                        tmp.index = tmp.left.index;
-                        tmp.left.index = i;
+                        int i = tmp.index.index;
+                        tmp.index.index = tmp.left.index.index;
+                        tmp.left.index.index = i;
                         tmp = tmp.left;
                     }
                 }
