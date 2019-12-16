@@ -9,9 +9,9 @@ public class Palace {
     static OutputStream outputStream = System.out;
     static InputReader in = new InputReader(inputStream);
     static PrintWriter out = new PrintWriter(outputStream);
-    static cube[] cubes;
+    static cube[] cubes = new cube[2000];
     static int n, o;
-    static ArrayList<Integer> ins;
+    static ArrayList<Integer> ins = new ArrayList<>();
     
     public static void main(String[] args) {
         int t= in.nextInt();
@@ -28,8 +28,8 @@ public class Palace {
     static void buildGraph() {
         n = in.nextInt();
         o = 0;
-        ins = new ArrayList<>();
-        cubes = new cube[n];
+        ins.clear();
+//        cubes = new cube[n];
         for (int i = 0; i < n; i++) {
             cubes[i] = new cube(in.nextInt(), in.nextInt(), in.nextInt());
         }
