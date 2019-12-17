@@ -20,7 +20,7 @@ public class Palace {
             buildGraph();
             for (int j = 0; j < ins.size(); j++) {
                 TravelB(ins.get(j));
-                if (cubes[ins.get(j)].height>o)
+                if (cubes[ins.get(j)].height > o)
                     o = cubes[ins.get(j)].height;
             }
             out.println(o);
@@ -66,15 +66,16 @@ public class Palace {
     }
     
     static void TravelB(int index) {
-        if (!cubes[index].next.isEmpty()) {
-            int flag = 0;
-            for (int i = 0; i < cubes[index].next.size(); i++) {
-                Travel(cubes[index].next.get(i));
-                if (cubes[index].max(cubes[cubes[index].next.get(i)].height)) {
-                    flag = 1;
-                }
+        int max = 0;
+        for (int i = 0; i < cubes[index].next.size(); i++) {
+            if (cubes[cubes[index].next.get(i)].visit != 1)
+                TravelB(cubes[index].next.get(i));
+            if (cubes[cubes[index].next.get(i)].height >= max) {
+                max = cubes[cubes[index].next.get(i)].height;
             }
         }
+        cubes[index].visit = 1;
+        cubes[index].height = max + cubes[index].h;
     }
     
     static class cube {
@@ -82,6 +83,7 @@ public class Palace {
         int w;
         int h;
         int height;
+        int visit = 0;
         int indegree = 0;
         int outdegree = 0;
         ArrayList<Integer> next = new ArrayList<>();

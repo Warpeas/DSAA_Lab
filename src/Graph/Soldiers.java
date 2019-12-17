@@ -142,25 +142,22 @@ public class Soldiers {
 //        return root;
 //    }
     
-    static TreeNode buildBinaryHeapFix() {
-        root = new TreeNode(ins.get(0));
-        nodes++;
-        for (int i = 1; i < ins.size(); i++) {
-            TreeNode tmp = new TreeNode(ins.get(i));
-            root.insertMax(tmp);
+    static void buildBinaryHeapFix() {
+        nodes = 0;
+        for (int i = 0; i < ins.size(); i++) {
+            TreeNode.insertMax(new TreeNode(ins.get(i)));
         }
-        return root;
     }
     
     static void buildOutputStack() {
         output = new Stack<>();
         while (root.index != -1) {
-            int tmp = root.deleteMax();
+            int tmp = TreeNode.deleteMax();
             output.push(tmp + 1);
             for (int i = 0; i < adjacencyLists[tmp].next.size(); i++) {
-                root.insertMax(new TreeNode(adjacencyLists[tmp].next.get(i)));
+                TreeNode.insertMax(new TreeNode(adjacencyLists[tmp].next.get(i)));
             }
-            if (root.index == -1 && adjacencyLists[tmp].next.isEmpty()) {
+            if (root == null && adjacencyLists[tmp].next.isEmpty()) {
                 break;
             }
         }
@@ -168,16 +165,16 @@ public class Soldiers {
     
     static void buildOutputStackFix() {
         output = new Stack<>();
-        while (root.index != -1) {
-            int tmp = root.deleteMax();
+        while (output.size() <= n) {
+            int tmp = TreeNode.deleteMax();
+            for (int j = 0; j < adjacencyLists[tmp].next.size(); j++) {
+                if (adjacencyLists[adjacencyLists[tmp].next.get(j)].visit != 1 && adjacencyLists[adjacencyLists[tmp].next.get(j)].indegree == 0) {
+                    TreeNode.insertMax(new TreeNode(adjacencyLists[tmp].next.get(j)));
+                }
+            }
             output.push(tmp + 1);
-            for (int i = 0; i < adjacencyLists[tmp].next.size(); i++) {
-                if (adjacencyLists[adjacencyLists[tmp].next.get(i)].visit != 1 && adjacencyLists[adjacencyLists[tmp].next.get(i)].indegree == 0)
-                    root.insertMax(new TreeNode(adjacencyLists[tmp].next.get(i)));
-            }
-            if (root.index == -1 && adjacencyLists[tmp].next.isEmpty()) {
+            if (root==null)
                 break;
-            }
         }
     }
     
@@ -202,13 +199,13 @@ public class Soldiers {
             }
         }
         
-        void insertMax(TreeNode node) {
-            if (root.index == -1) {
+        static void insertMax(TreeNode node) {
+            if (root == null) {
                 nodes++;
                 root = node;
             } else {
                 String str = toBinary(++nodes);
-                TreeNode tmp = this;
+                TreeNode tmp = root;
                 for (int i = 1; i < str.length() - 1; i++) {
                     if (str.charAt(i) == '0') {
                         tmp = tmp.left;
@@ -224,7 +221,7 @@ public class Soldiers {
                     tmp.right.father = tmp;
                     tmp = tmp.right;
                 }
-                while (tmp != this) {
+                while (tmp != root) {
                     if (tmp.index > tmp.father.index) {
                         int i = tmp.index;
                         tmp.index = tmp.father.index;
@@ -248,18 +245,19 @@ public class Soldiers {
             return str;
         }
         
-        int deleteMax() {
+        static int deleteMax() {
             String str = toBinary(nodes--);
-            TreeNode tmp = root;
             int output = root.index;
-            if (nodes == 1) {
-                tmp.index = tmp.left.index;
-                tmp.left = null;
-                return output;
-            } else if (nodes == 0) {
-                root.index = -1;
+            if (nodes == 0) {
+                root = null;
                 return output;
             }
+            if (nodes == 1) {
+                root.index = root.left.index;
+                root.left = null;
+                return output;
+            }
+            TreeNode tmp = root;
 //            tmp.maintain();
             for (int i = 1; i < str.length() - 1; i++) {
                 if (str.charAt(i) == '0') {
@@ -274,13 +272,12 @@ public class Soldiers {
                 root.index = tmp.right.index;
                 tmp.right = null;
             }
-            tmp = root;
-            tmp.maintain();
+            TreeNode.maintain();
             return output;
         }
         
-        void maintain() {
-            TreeNode tmp = this;
+        static void maintain() {
+            TreeNode tmp = root;
             while (tmp.left != null || tmp.right != null) {
                 if (tmp.right != null && tmp.left != null) {
                     if (tmp.right.index > tmp.left.index) {
