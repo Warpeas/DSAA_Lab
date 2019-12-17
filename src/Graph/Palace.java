@@ -10,15 +10,18 @@ public class Palace {
     static InputReader in = new InputReader(inputStream);
     static PrintWriter out = new PrintWriter(outputStream);
     static cube[] cubes;
-    static int n, o;
+    static int n;
+    static long o;
     static ArrayList<Integer> ins;
     
     public static void main(String[] args) {
-        int t= in.nextInt();
+        int t = in.nextInt();
         for (int i = 0; i < t; i++) {
             buildGraph();
             for (int j = 0; j < ins.size(); j++) {
-                Travel(ins.get(j));
+                TravelB(ins.get(j));
+                if (cubes[ins.get(j)].height>o)
+                    o = cubes[ins.get(j)].height;
             }
             out.println(o);
         }
@@ -35,27 +38,41 @@ public class Palace {
         }
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                if (i!=j&&cubes[i].canBePlacedOn(cubes[j])) {
-                    cubes[j].add(i);
+                if (i != j && cubes[i].canBePlacedOn(cubes[j])) {
+                    cubes[i].add(j);
                 }
             }
         }
         for (int i = 0; i < n; i++) {
-            if (cubes[i].indegree==0){
+            if (cubes[i].indegree == 0) {
                 ins.add(i);
             }
         }
     }
     
-    static void Travel(int index){
+    static void Travel(int index) {
         if (!cubes[index].next.isEmpty()) {
             for (int i = 0; i < cubes[index].next.size(); i++) {
-                cubes[cubes[index].next.get(i)].max(cubes[index].height);
+                if (cubes[cubes[index].next.get(i)].max(cubes[index].height)) {
+                    return;
+                }
                 Travel(cubes[index].next.get(i));
             }
-        }else {
-            if (cubes[index].height > o){
+        } else {
+            if (cubes[index].height > o) {
                 o = cubes[index].height;
+            }
+        }
+    }
+    
+    static void TravelB(int index) {
+        if (!cubes[index].next.isEmpty()) {
+            int flag = 0;
+            for (int i = 0; i < cubes[index].next.size(); i++) {
+                Travel(cubes[index].next.get(i));
+                if (cubes[index].max(cubes[cubes[index].next.get(i)].height)) {
+                    flag = 1;
+                }
             }
         }
     }
@@ -77,7 +94,7 @@ public class Palace {
         }
         
         boolean canBePlacedOn(cube other) {
-            return (this.l < other.l && this.w < other.w)||(this.l < other.w && this.w < other.l);
+            return (this.l < other.l && this.w < other.w) || (this.l < other.w && this.w < other.l);
         }
         
         void add(int index) {
@@ -86,14 +103,19 @@ public class Palace {
             cubes[index].indegree++;
         }
         
-        void max(int height) {
-            this.height = h + height > this.height ? h + height : this.height;
+        boolean max(int height) {
+            if (this.h + height > this.height) {
+                this.height = this.h + height;
+                return false;
+            } else
+                return true;
         }
     }
     
     static class InputReader {
         public BufferedReader reader;
         public StringTokenizer tokenizer;
+        
         public InputReader(InputStream stream) {
             reader = new BufferedReader(new InputStreamReader(stream), 32768);
             tokenizer = null;
